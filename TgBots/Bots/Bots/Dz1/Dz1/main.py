@@ -1,4 +1,4 @@
-import json
+﻿import json
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, executor
 from aiogram import types
@@ -11,7 +11,10 @@ from colorama import *
 from States import *
 from defs import *
 
-bot = Bot(token='5302355669:AAFwboWIlaCWqG-Xhg12Q2ntCCsMk3OCvH8', parse_mode='html')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not BOT_TOKEN:
+    raise RuntimeError('Set TELEGRAM_BOT_TOKEN environment variable')
+bot = Bot(token=BOT_TOKEN, parse_mode='html')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 @dp.message_handler(commands=['start'], state='*')
@@ -20,20 +23,20 @@ async def start(message: types.Message, state: FSMContext):
     with open('database.json', 'r') as d:
             db = json.load(d)
     if message.from_user.id not in db['users']:
-        await message.answer(f"Вас немає в базі даних \nДавайте створимо ваш акаунт")
+        await message.answer(f"Р’Р°СЃ РЅРµРјР°С” РІ Р±Р°Р·С– РґР°РЅРёС… \nР”Р°РІР°Р№С‚Рµ СЃС‚РІРѕСЂРёРјРѕ РІР°С€ Р°РєР°СѓРЅС‚")
         Defs().write_user(message.from_user.id)
         await message.answer(f"Name")
         await States.name.set()
     else:
         keyb = Defs().start_keyb()
-        await message.answer('Привіт обери що hosh', reply_markup=keyb)
+        await message.answer('РџСЂРёРІС–С‚ РѕР±РµСЂРё С‰Рѕ hosh', reply_markup=keyb)
         await States.dani.set()
      
     
 @dp.message_handler(state=States.name, content_types=types.ContentTypes.TEXT)
 async def name_step(message: types.Message, state: FSMContext):
     Defs().write_name(message.from_user.id,message.text)
-    await message.answer(f"Записано")
+    await message.answer(f"Р—Р°РїРёСЃР°РЅРѕ")
     await message.answer(f"Familia")
     await state.finish()
     await States.fname.set()
@@ -93,7 +96,7 @@ async def dani2(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=States.fname, content_types=types.ContentTypes.TEXT)
 async def fname_step(message: types.Message, state: FSMContext):
-    await message.answer(f"Записано")
+    await message.answer(f"Р—Р°РїРёСЃР°РЅРѕ")
     Defs().write_fname(message.from_user.id,message.text)
     await message.answer(f"age")
     await state.finish()
@@ -104,7 +107,7 @@ async def fname_step(message: types.Message, state: FSMContext):
 async def age_step(message: types.Message, state: FSMContext):
     Defs().write_age(message.from_user.id,message.text)
     keyb = Defs().pok_keyb()
-    await message.answer(f"Записано",reply_markup=keyb)
+    await message.answer(f"Р—Р°РїРёСЃР°РЅРѕ",reply_markup=keyb)
     
     await States.dani.set()
     

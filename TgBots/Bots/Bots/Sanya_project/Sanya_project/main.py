@@ -1,4 +1,4 @@
-import json
+﻿import json
 from datetime import datetime, timedelta
 from platform import python_branch
 from aiogram import Bot, Dispatcher, executor
@@ -12,7 +12,10 @@ from colorama import *
 from States import *
 from defs import *
 
-bot = Bot(token='5363211721:AAHviHLVT2QLA0qHKZOl83-XwsAWj4Js8KE', parse_mode='html')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not BOT_TOKEN:
+    raise RuntimeError('Set TELEGRAM_BOT_TOKEN environment variable')
+bot = Bot(token=BOT_TOKEN, parse_mode='html')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 
@@ -21,7 +24,7 @@ async def start(message: types.Message, state: FSMContext):
     await state.finish()
     Defs().write_user(message.from_user.id)
     keyb = Defs().start_keyb()
-    await message.answer('Привіт обери що бажаєш', reply_markup=keyb)
+    await message.answer('РџСЂРёРІС–С‚ РѕР±РµСЂРё С‰Рѕ Р±Р°Р¶Р°С”С€', reply_markup=keyb)
     await States.food_state.set()
 
 
@@ -34,7 +37,7 @@ async def what_u_want(call: types.CallbackQuery, state: FSMContext):
         Defs().write_food(call.from_user.id, callback)
         await bot.edit_message_text(chat_id=call.from_user.id
                                     , message_id=call.message.message_id,
-                                    text='Ваш вибір записано , оберіть будьласка розмір',
+                                    text='Р’Р°С€ РІРёР±С–СЂ Р·Р°РїРёСЃР°РЅРѕ , РѕР±РµСЂС–С‚СЊ Р±СѓРґСЊР»Р°СЃРєР° СЂРѕР·РјС–СЂ',
                                     reply_markup=keyb)
         await States.size_state.set()
     elif callback == 'pizza':
@@ -42,7 +45,7 @@ async def what_u_want(call: types.CallbackQuery, state: FSMContext):
         Defs().write_food(call.from_user.id, callback)
         await bot.edit_message_text(chat_id=call.from_user.id
                                     , message_id=call.message.message_id,
-                                    text='Ваш вибір записано , оберіть будьласка розмір',
+                                    text='Р’Р°С€ РІРёР±С–СЂ Р·Р°РїРёСЃР°РЅРѕ , РѕР±РµСЂС–С‚СЊ Р±СѓРґСЊР»Р°СЃРєР° СЂРѕР·РјС–СЂ',
                                     reply_markup=keyb)
         await States.size_state.set()
 
@@ -51,7 +54,7 @@ async def what_u_want(call: types.CallbackQuery, state: FSMContext):
         Defs().write_food(call.from_user.id, callback)
         await bot.edit_message_text(chat_id=call.from_user.id
                                     , message_id=call.message.message_id,
-                                    text='Ваш вибір записано , оберіть будьласка розмір',
+                                    text='Р’Р°С€ РІРёР±С–СЂ Р·Р°РїРёСЃР°РЅРѕ , РѕР±РµСЂС–С‚СЊ Р±СѓРґСЊР»Р°СЃРєР° СЂРѕР·РјС–СЂ',
                                     reply_markup=keyb)
         await States.size_state.set()
 
@@ -63,26 +66,26 @@ async def size_get(call: types.CallbackQuery, state: FSMContext):
     if callback == 'small':
         keyb = Defs().geolocation()
         Defs().write_size(call.from_user.id, callback)
-        await call.message.answer(text='Дякую ви заповнили всі данні',reply_markup=keyb)
+        await call.message.answer(text='Р”СЏРєСѓСЋ РІРё Р·Р°РїРѕРІРЅРёР»Рё РІСЃС– РґР°РЅРЅС–',reply_markup=keyb)
         await States.geo.set()
     elif callback == 'medium':
         keyb = Defs().geolocation()
         Defs().write_size(call.from_user.id, callback)
-        await call.message.answer(text='Дякую ви заповнили всі данні',reply_markup=keyb)
+        await call.message.answer(text='Р”СЏРєСѓСЋ РІРё Р·Р°РїРѕРІРЅРёР»Рё РІСЃС– РґР°РЅРЅС–',reply_markup=keyb)
 
         await States.geo.set()
 
     elif callback == 'large':
         keyb = Defs().geolocation()
         Defs().write_size(call.from_user.id, callback)
-        await call.message.answer(text='Дякую ви заповнили всі данні',reply_markup=keyb)
+        await call.message.answer(text='Р”СЏРєСѓСЋ РІРё Р·Р°РїРѕРІРЅРёР»Рё РІСЃС– РґР°РЅРЅС–',reply_markup=keyb)
 
         await States.geo.set()
 
     elif callback == 'back':
         keyb = Defs().start_keyb()
         await bot.edit_message_text(chat_id=call.from_user.id,message_id=call.message.message_id
-                                    ,text = 'Привіт обери що бажаєш',reply_markup=keyb)
+                                    ,text = 'РџСЂРёРІС–С‚ РѕР±РµСЂРё С‰Рѕ Р±Р°Р¶Р°С”С€',reply_markup=keyb)
         await States.food_state.set()
 
 
@@ -95,3 +98,4 @@ async def handle_location(message: types.Message):
  
 
 executor.start_polling(dp, skip_updates=True, fast=True)
+

@@ -1,4 +1,4 @@
-from cgitb import text
+﻿from cgitb import text
 from email import message
 import json
 from re import T
@@ -17,7 +17,10 @@ from defs import *
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-bot = Bot(token='5302355669:AAFwboWIlaCWqG-Xhg12Q2ntCCsMk3OCvH8', parse_mode='html')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not BOT_TOKEN:
+    raise RuntimeError('Set TELEGRAM_BOT_TOKEN environment variable')
+bot = Bot(token=BOT_TOKEN, parse_mode='html')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 @dp.message_handler(commands=['start'], state='*')
@@ -27,7 +30,7 @@ async def start(message: types.Message, state: FSMContext):
     if message.from_user.id not in db['users']:
         Defs().write_user(message.from_user.id) 
         Defs().write_numb(message.from_user.id) 
-        await message.answer(f"Напишите номер")  
+        await message.answer(f"РќР°РїРёС€РёС‚Рµ РЅРѕРјРµСЂ")  
         await States.password.set()
     else:
         keyb = Defs().start_keyb()
@@ -44,8 +47,8 @@ async def menu1(message: types.Message, state: FSMContext):
         await message.answer(f"Soglashenie",reply_markup=keyb)  
         await States.menu.set()
     else:
-        await message.answer(f"Неправильный номер") 
-        await message.answer(f"Напишите номер")  
+        await message.answer(f"РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ РЅРѕРјРµСЂ") 
+        await message.answer(f"РќР°РїРёС€РёС‚Рµ РЅРѕРјРµСЂ")  
         await States.password.set()
 
 
@@ -55,9 +58,9 @@ async def dani(call: types.CallbackQuery, state: FSMContext):
     await state.finish()
     if callback == 'soglasen':
         """"
-        kb = KeyboardButton(text="Заказ")
-        kb1 = KeyboardButton(text="История")
-        kb1 = KeyboardButton(text="История")
+        kb = KeyboardButton(text="Р—Р°РєР°Р·")
+        kb1 = KeyboardButton(text="РСЃС‚РѕСЂРёСЏ")
+        kb1 = KeyboardButton(text="РСЃС‚РѕСЂРёСЏ")
         keyb = ReplyKeyboardMarkup(resize_keyboard=True)
         keyb.add(kb,kb1)
         keyb.add(kb2)
@@ -70,19 +73,19 @@ async def dani(call: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(state=States.menu1, content_types=types.ContentTypes.TEXT)
 async def menu1(message: types.Message, state: FSMContext):
     await state.finish()
-    if message.text == 'Заказ':
+    if message.text == 'Р—Р°РєР°Р·':
         keyb = Defs().nazad()
-        await message.answer(f"Введите сумму",reply_markup=keyb)
+        await message.answer(f"Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ",reply_markup=keyb)
         await States.zakaz.set()
-    elif message.text =='История':
+    elif message.text =='РСЃС‚РѕСЂРёСЏ':
         with open('database.json', 'r') as d:
             db = json.load(d)
         for i in db['user-info'][str(message.from_user.id)]['zakazi']:
             keyb = Defs().start_keyb() 
             j=db['user-info'][str(message.from_user.id)]['zakazi'].index(i)
-            await message.answer(text = f'Заказ {j+1} - {i}')
+            await message.answer(text = f'Р—Р°РєР°Р· {j+1} - {i}')
         await States.menu1.set()
-    elif message.text =='Поддержка':
+    elif message.text =='РџРѕРґРґРµСЂР¶РєР°':
         keyb = Defs().start_keyb() 
 
         await message.answer(text = 'Podderzhivayu',
@@ -107,7 +110,7 @@ def check_user_input(input):
 @dp.message_handler(state=States.zakaz, content_types=types.ContentTypes.TEXT)
 async def name_step(message: types.Message, state: FSMContext):
     await state.finish()
-    if message.text =='Назад':
+    if message.text =='РќР°Р·Р°Рґ':
         keyb = Defs().start_keyb() 
         await message.answer(f"Marzha and procent",reply_markup=keyb)
         await States.menu1.set()
@@ -115,31 +118,31 @@ async def name_step(message: types.Message, state: FSMContext):
         if check_user_input(message.text)==True:
             Defs().write_ammount(message.from_user.id,message.text)
             keyb = Defs().total() 
-            await message.answer(f"это Тотал - обучение что такое ",reply_markup=keyb)
+            await message.answer(f"СЌС‚Рѕ РўРѕС‚Р°Р» - РѕР±СѓС‡РµРЅРёРµ С‡С‚Рѕ С‚Р°РєРѕРµ ",reply_markup=keyb)
             await States.zakaz1.set()
         else:
             keyb = Defs().nazad()
-            await message.answer(f"Введите сумму",reply_markup=keyb)
+            await message.answer(f"Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ",reply_markup=keyb)
             await States.zakaz.set()
 
 
 @dp.message_handler(state=States.zakaz1, content_types=types.ContentTypes.TEXT)
 async def name_step(message: types.Message, state: FSMContext):
     await state.finish()
-    if message.text == 'Да':
+    if message.text == 'Р”Р°':
         keyb = Defs().start_keyb()
         await message.answer(f"Marzha and procent",reply_markup=keyb)
         await States.menu1.set()
-    elif message.text =='Нет':
+    elif message.text =='РќРµС‚':
         #keyb = Defs().start_keyb() 
         #await call.message.answer(f"Marzha and procent",reply_markup=keyb)
         await States.menu1.set()
-    elif message.text =='Назад':
+    elif message.text =='РќР°Р·Р°Рґ':
         keyb = Defs().start_keyb() 
         await message.answer(f"Marzha and procent",reply_markup=keyb)
         await States.menu1.set()
 """"
-@dp.message_handler( message.text=='Назад', state="*")
+@dp.message_handler( message.text=='РќР°Р·Р°Рґ', state="*")
 async def nazad(message: types.Message, state: FSMContext):
     await state.finish()
     keyb = Defs().start_keyb()

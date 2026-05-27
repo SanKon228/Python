@@ -1,4 +1,4 @@
-from cgitb import text
+﻿from cgitb import text
 from email import message
 import json
 from datetime import datetime, timedelta
@@ -20,7 +20,10 @@ import telebot
 from aiogram.utils.exceptions import MessageNotModified
 from contextlib import suppress
 
-bot = Bot(token='5302355669:AAFwboWIlaCWqG-Xhg12Q2ntCCsMk3OCvH8', parse_mode='html')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not BOT_TOKEN:
+    raise RuntimeError('Set TELEGRAM_BOT_TOKEN environment variable')
+bot = Bot(token=BOT_TOKEN, parse_mode='html')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 @dp.message_handler(commands=['start'], state='*')

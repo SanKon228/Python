@@ -1,4 +1,4 @@
-import json
+﻿import json
 import codecs
 import asyncio
 from datetime import datetime, timedelta
@@ -20,7 +20,10 @@ import time
 from bs4 import BeautifulSoup
 
 
-bot = Bot(token='5302355669:AAFwboWIlaCWqG-Xhg12Q2ntCCsMk3OCvH8', parse_mode='html')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not BOT_TOKEN:
+    raise RuntimeError('Set TELEGRAM_BOT_TOKEN environment variable')
+bot = Bot(token=BOT_TOKEN, parse_mode='html')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 @dp.message_handler(commands=['start'], state='*')
@@ -47,7 +50,7 @@ async def yes_or_no(message: types.Message, state: FSMContext):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ["eshcho", "ne"]
         keyboard.add(*buttons)
-        await message.answer("Успокоить?", reply_markup=keyboard)
+        await message.answer("РЈСЃРїРѕРєРѕРёС‚СЊ?", reply_markup=keyboard)
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         await States.start_kit.set()
     elif msg == 'eshcho':
@@ -61,7 +64,7 @@ async def yes_or_no(message: types.Message, state: FSMContext):
         await bot.send_photo(chat_id=message.chat.id ,photo = open("E:\HHJK\python\Bots\Dz2\sample_image.png", 'rb'))
         await States.start_kit.set()
     elif msg == 'ne':
-        await message.reply("Если буду нужен нажми /start , пока✋", reply_markup=types.ReplyKeyboardRemove())
+        await message.reply("Р•СЃР»Рё Р±СѓРґСѓ РЅСѓР¶РµРЅ РЅР°Р¶РјРё /start , РїРѕРєР°вњ‹", reply_markup=types.ReplyKeyboardRemove())
     
 
 executor.start_polling(dp, skip_updates=True, fast=True)

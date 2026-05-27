@@ -1,14 +1,22 @@
+﻿import os
 from aiogram import Bot, Dispatcher, executor
+import os
 from aiogram import types
+import os
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import os
 from aiogram.dispatcher import FSMContext
 from States import *
 from defs import *
 from telegram import InputMediaPhoto
+import os
 from aiogram.utils.exceptions import MessageNotModified
 from contextlib import suppress
 
-bot = Bot(token='5302355669:AAFwboWIlaCWqG-Xhg12Q2ntCCsMk3OCvH8', parse_mode='html')
+BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not BOT_TOKEN:
+    raise RuntimeError('Set TELEGRAM_BOT_TOKEN environment variable')
+bot = Bot(token=BOT_TOKEN, parse_mode='html')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 
@@ -51,3 +59,4 @@ async def dani2(call: types.CallbackQuery, state: FSMContext):
 
 
 executor.start_polling(dp, skip_updates=True, fast=True)
+
